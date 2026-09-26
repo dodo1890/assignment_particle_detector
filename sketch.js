@@ -2,12 +2,12 @@ const r = require("raylib");
 const geometry = require("./geometry");
 
 const screenWidth = 300;
-const screenOneHeight = 200;
+const screenHeight = 200;
 const FPS = 60;
 
 const scannerOneRange = 20;
 
-const scannerOneHeight = screenOneHeight;
+const scannerOneHeight = screenHeight;
 const scannerOnePositionY = 0;
 const scanOneGBPosition = screenWidth - scannerOneRange;
 const scanOneStartPosition = 0;
@@ -20,7 +20,7 @@ const particleOneStart = 130;
 const particleOneEnd = 180;
 
 const particleOneRange = particleOneEnd - particleOneStart;
-const particleOneHeight = screenOneHeight;
+const particleOneHeight = screenHeight;
 const particleOnePositionX = particleOneStart;
 const particleOnePositionY = 0;
 
@@ -28,7 +28,7 @@ const particleTwoStart = 250;
 const particleTwoEnd = 255;
 
 const particleTwoRange = particleTwoEnd - particleTwoStart;
-const particleTwoHeight = screenOneHeight;
+const particleTwoHeight = screenHeight;
 const particleTwoPositionX = particleTwoStart;
 const particleTwoPositionY = 0;
 
@@ -71,7 +71,7 @@ function running() {
 }
 
 function setup() {
-    r.InitWindow(screenWidth, screenOneHeight, "PARTICLE DETECTOR");
+    r.InitWindow(screenWidth, screenHeight, "PARTICLE DETECTOR");
     r.SetTargetFPS(FPS);
 }
 
