@@ -2,54 +2,67 @@ const r = require("raylib");
 const geometry = require("./geometry");
 
 const screenWidth = 300;
-const screenHeight = 200;
+const screenOneHeight = 200;
 const FPS = 60;
 
-const scannerRange = 20;
+const scannerOneRange = 20;
 
-const scannerHeight = screenHeight;
-const scannerPositionY = 0;
-const goBackPosition = screenWidth - scannerRange;
-const startingPosition = 0;
-let scannerPosition = 0;
-let direction = 1;
-let scannerColour = r.WHITE;
+const scannerOneHeight = screenOneHeight;
+const scannerOnePositionY = 0;
+const scanOneGBPosition = screenWidth - scannerOneRange;
+const scanOneStartPosition = 0;
+const scannerOneSpeed = 2;
+let scannerOnePosition = 0;
+let scannerOneDirection = 1;
+let scannerOneColour = r.WHITE;
 
-const particleStart = 130;
-const particleEnd = 180;
+const particleOneStart = 130;
+const particleOneEnd = 180;
 
-const particleRange = particleEnd - particleStart;
-const particleHeight = screenHeight;
-const particlePositionX = particleStart;
-const particlePositionY = 0;
+const particleOneRange = particleOneEnd - particleOneStart;
+const particleOneHeight = screenOneHeight;
+const particleOnePositionX = particleOneStart;
+const particleOnePositionY = 0;
 
-function overlapDetector(feildStart, feildEnd, scanWidth, scanLoc) {
-    if (scanLoc >= (feildStart - scanWidth) && (scanLoc <= feildEnd)) {
-        scannerColour = r.RED;
+const particleTwoStart = 250;
+const particleTwoEnd = 255;
+
+const particleTwoRange = particleTwoEnd - particleTwoStart;
+const particleTwoHeight = screenOneHeight;
+const particleTwoPositionX = particleTwoStart;
+const particleTwoPositionY = 0;
+
+function overlapDetector(feild1Start, feil1End, feild2Start, feil2End, scanWidth, scanLoc) {
+    if ((scanLoc >= (feild1Start - scanWidth) && (scanLoc <= feil1End)) || (scanLoc >= (feild2Start - scanWidth) && (scanLoc <= feil2End))) {
+        scannerOneColour = r.RED;
     } else {
-        scannerColour = r.WHITE;
+        scannerOneColour = r.WHITE;
     }
 }
 
-function particleFeild() {
-    r.DrawRectangle(particlePositionX, particlePositionY, particleRange, particleHeight, r.BLUE);
+function particleFeild2() {
+    r.DrawRectangle(particleTwoPositionX, particleTwoPositionY, particleTwoRange, particleTwoHeight, r.BLUE);
+}
+
+function particleFeild1() {
+    r.DrawRectangle(particleOnePositionX, particleOnePositionY, particleOneRange, particleOneHeight, r.BLUE);
 }
 
 function scannerFeild() {
-    r.DrawRectangle(scannerPosition, scannerPositionY, scannerRange, scannerHeight, scannerColour);
+    r.DrawRectangle(scannerOnePosition, scannerOnePositionY, scannerOneRange, scannerOneHeight, scannerOneColour);
 }
 
 function switchDirection() {
-    if (scannerPosition >= goBackPosition) {
-        return direction = 0;
+    if (scannerOnePosition >= scanOneGBPosition) {
+        return scannerOneDirection = 0;
     }
-    if (scannerPosition <= startingPosition) {
-        return direction = 1;
+    if (scannerOnePosition <= scanOneStartPosition) {
+        return scannerOneDirection = 1;
     }
 }
 
 function scannerMovement() {
-    scannerPosition = geometry.position(scannerPosition, direction);
+    scannerOnePosition = geometry.position(scannerOnePosition, scannerOneDirection, scannerOneSpeed);
     switchDirection();
 }
 
@@ -58,19 +71,20 @@ function running() {
 }
 
 function setup() {
-    r.InitWindow(screenWidth, screenHeight, "HEADING");
+    r.InitWindow(screenWidth, screenOneHeight, "PARTICLE DETECTOR");
     r.SetTargetFPS(FPS);
 }
 
 function update() {
     scannerMovement();
-    overlapDetector(particleStart, particleEnd, scannerRange, scannerPosition);
+    overlapDetector(particleOneStart, particleOneEnd, particleTwoStart, particleTwoEnd, scannerOneRange, scannerOnePosition);
 }
 
 function draw() {
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
-    particleFeild();
+    particleFeild2();
+    particleFeild1();
     scannerFeild();
     r.EndDrawing();
 }
