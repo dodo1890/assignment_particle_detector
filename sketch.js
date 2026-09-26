@@ -6,25 +6,37 @@ const screenHeight = 200;
 const FPS = 60;
 
 const scannerRange = 20;
+
 const scannerHeight = screenHeight;
 const scannerPositionY = 0;
+const goBackPosition = screenWidth - scannerRange;
+const startingPosition = 0;
 let scannerPosition = 0;
 let direction = 1;
+let scannerColour = r.WHITE;
 
-const particleStart = 100;
-const particleEnd = 150;
+const particleStart = 130;
+const particleEnd = 180;
 
 const particleRange = particleEnd - particleStart;
 const particleHeight = screenHeight;
 const particlePositionX = particleStart;
 const particlePositionY = 0;
 
+function overlapDetector(feildStart, feildEnd, scanWidth, scanLoc) {
+    if (scanLoc >= (feildStart - scanWidth) && (scanLoc <= feildEnd)) {
+        scannerColour = r.RED;
+    } else {
+        scannerColour = r.WHITE;
+    }
+}
 
-const goBackPosition = screenWidth - scannerRange;
-const startingPosition = 0;
-
-function particle() {
+function particleFeild() {
     r.DrawRectangle(particlePositionX, particlePositionY, particleRange, particleHeight, r.BLUE);
+}
+
+function scannerFeild() {
+    r.DrawRectangle(scannerPosition, scannerPositionY, scannerRange, scannerHeight, scannerColour);
 }
 
 function switchDirection() {
@@ -52,13 +64,14 @@ function setup() {
 
 function update() {
     scannerMovement();
+    overlapDetector(particleStart, particleEnd, scannerRange, scannerPosition);
 }
 
 function draw() {
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
-    particle();
-    r.DrawRectangle(scannerPosition, scannerPositionY, scannerRange, scannerHeight, r.WHITE);
+    particleFeild();
+    scannerFeild();
     r.EndDrawing();
 }
 
