@@ -5,7 +5,6 @@ function calcOffset(outer, inner) {
 }
 
 function position(p, toggle, speed) {
-    // 
     if (toggle === 1) {
         return p + speed;
     }
