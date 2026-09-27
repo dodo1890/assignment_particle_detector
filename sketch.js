@@ -35,15 +35,13 @@ const hParticleTwoRange = 5;
 const vParticleOneStart = 80;
 const vParticleOneRange = 50;
 
-let direction = 1;
-
-function twoOverlapDetector(Feild1Start, Feild1Range, Feild2Start, Feild2Range, ScanLoc, ScanRange) {
-    if ((ScanLoc >= (Feild1Start - ScanRange) && (ScanLoc <= (Feild1Start + Feild1Range))) || (ScanLoc >= (Feild2Start - ScanRange) && (ScanLoc <= (Feild2Start + Feild2Range)))) {
-        return r.RED;
-    } else {
-        return r.WHITE;
-    }
-}
+// function twoOverlapDetector(Feild1Start, Feild1Range, Feild2Start, Feild2Range, ScanLoc, ScanRange) {
+//     if ((ScanLoc >= (Feild1Start - ScanRange) && (ScanLoc <= (Feild1Start + Feild1Range))) || (ScanLoc >= (Feild2Start - ScanRange) && (ScanLoc <= (Feild2Start + Feild2Range)))) {
+//         return r.RED;
+//     } else {
+//         return r.WHITE;
+//     }
+// }
 
 function oneOverlapDetector(FeildStart, FeildRange, ScanLoc, ScanRange) {
     if (ScanLoc >= (FeildStart - ScanRange) && (ScanLoc <= (FeildStart + FeildRange))) {
@@ -116,8 +114,8 @@ function setup() {
 
 function update() {
     scannerMovements();
-    hScannerTwoColour = twoOverlapDetector(hParticleOneStart, hParticleOneRange, hParticleTwoStart, hParticleTwoRange, hScannerTwoXPosition, hScannerTwoRange);
-    hScannerOneColour = twoOverlapDetector(hParticleOneStart, hParticleOneRange, hParticleTwoStart, hParticleTwoRange, hScannerOneXPosition, hScannerOneRange);
+    hScannerTwoColour = geometry.twoOverlapDetector(hParticleOneStart, hParticleOneRange, hParticleTwoStart, hParticleTwoRange, hScannerTwoXPosition, hScannerTwoRange);
+    hScannerOneColour = geometry.twoOverlapDetector(hParticleOneStart, hParticleOneRange, hParticleTwoStart, hParticleTwoRange, hScannerOneXPosition, hScannerOneRange);
     vScannerColour = oneOverlapDetector(vParticleOneStart, vParticleOneRange, vScannerYPosition, vScannerRange);
 }
 

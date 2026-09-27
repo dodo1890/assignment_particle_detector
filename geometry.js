@@ -27,7 +27,13 @@ function directionSwither(minValue, maxValue, position, currentD) {
     }
 }
 
-
+function twoOverlapDetector(Feild1Start, Feild1Range, Feild2Start, Feild2Range, ScanLoc, ScanRange) {
+    if ((ScanLoc >= (Feild1Start - ScanRange) && (ScanLoc <= (Feild1Start + Feild1Range))) || (ScanLoc >= (Feild2Start - ScanRange) && (ScanLoc <= (Feild2Start + Feild2Range)))) {
+        return r.RED;
+    } else {
+        return r.WHITE;
+    }
+}
 
 function isNegative(value) {
     return value > 0 ? value : 0;
@@ -38,4 +44,5 @@ module.exports = {
     positionChanger,
     isNegative,
     directionSwither,
+    twoOverlapDetector,
 };
