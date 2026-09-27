@@ -26,7 +26,7 @@ let hScannerTwoXPosition = screenWidth / 2;
 let hScannerTwoDirection = 1;
 let hScannerTwoColour = r.WHITE;
 
-const hParticleOneStart = 80;
+const hParticleOneStart = 140;
 const hParticleOneRange = 20;
 
 const hParticleTwoStart = 250;
@@ -34,6 +34,8 @@ const hParticleTwoRange = 5;
 
 const vParticleOneStart = 80;
 const vParticleOneRange = 50;
+
+let direction = 1;
 
 function twoOverlapDetector(Feild1Start, Feild1Range, Feild2Start, Feild2Range, ScanLoc, ScanRange) {
     if ((ScanLoc >= (Feild1Start - ScanRange) && (ScanLoc <= (Feild1Start + Feild1Range))) || (ScanLoc >= (Feild2Start - ScanRange) && (ScanLoc <= (Feild2Start + Feild2Range)))) {
@@ -84,49 +86,23 @@ function scannerFeilds() {
     r.DrawRectangle(vScannerXPosition, vScannerYPosition, vScannerWidth, vScannerRange, vScannerColour);
 }
 
-function hScannerOneDirectionSwither() {
+function scannerMovements() {
     const hScanOneGBPosition = (screenWidth / 2) - hScannerOneRange;
     const hScanOneStartPosition = 0;
 
-    if (hScannerOneXPosition >= hScanOneGBPosition) {
-        return hScannerOneDirection = 0;
-    }
-    if (hScannerOneXPosition <= hScanOneStartPosition) {
-        return hScannerOneDirection = 1;
-    }
-}
-
-function hScannerTwoDirectionSwither() {
     const hScanTwoStartPosition = (screenWidth / 2);
     const hScanTwoGBPosition = screenWidth - hScannerTwoRange;
 
-    if (hScannerTwoXPosition >= hScanTwoGBPosition) {
-        return hScannerTwoDirection = 0;
-    }
-    if (hScannerTwoXPosition <= hScanTwoStartPosition) {
-        return hScannerTwoDirection = 1;
-    }
-}
-
-function vScannerDirectionSwither() {
     const vScanStartPosition = 0;
     const vScanGBPosition = screenHeight - vScannerRange;
 
-    if (vScannerYPosition >= vScanGBPosition) {
-        return vScannerDirection = 0;
-    }
-    if (vScannerYPosition <= vScanStartPosition) {
-        return vScannerDirection = 1;
-    }
-}
+    hScannerOneDirection = geometry.directionSwither(hScanOneStartPosition, hScanOneGBPosition, hScannerOneXPosition, hScannerOneDirection);
+    hScannerTwoDirection = geometry.directionSwither(hScanTwoStartPosition, hScanTwoGBPosition, hScannerTwoXPosition, hScannerTwoDirection);
+    vScannerDirection = geometry.directionSwither(vScanStartPosition, vScanGBPosition, vScannerYPosition, vScannerDirection);
 
-function scannerMovements() {
-    hScannerOneXPosition = geometry.position(hScannerOneXPosition, hScannerOneDirection, hScannerOneSpeed);
-    hScannerTwoXPosition = geometry.position(hScannerTwoXPosition, hScannerTwoDirection, hScannerTwoSpeed);
-    vScannerYPosition = geometry.position(vScannerYPosition, vScannerDirection, vScannerSpeed);
-    vScannerDirectionSwither();
-    hScannerOneDirectionSwither();
-    hScannerTwoDirectionSwither();
+    hScannerOneXPosition = geometry.positionChanger(hScannerOneXPosition, hScannerOneDirection, hScannerOneSpeed);
+    hScannerTwoXPosition = geometry.positionChanger(hScannerTwoXPosition, hScannerTwoDirection, hScannerTwoSpeed);
+    vScannerYPosition = geometry.positionChanger(vScannerYPosition, vScannerDirection, vScannerSpeed);
 }
 
 function running() {
