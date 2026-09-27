@@ -5,90 +5,128 @@ const screenWidth = 300;
 const screenHeight = 200;
 const FPS = 60;
 
-const scannerOneRange = 20;
-const scannerOneSpeed = 1;
+const vScannerRange = 20;
+const vScannerSpeed = 2;
 
-const scannerOneHeight = screenHeight;
-const scannerOnePositionY = 0;
-const scanOneGBPosition = (screenWidth / 2) - scannerOneRange;
-const scanOneStartPosition = 0;
-let scannerOnePosition = 0;
-let scannerOneDirection = 1;
-let scannerOneColour = r.WHITE;
+let vScannerYPosition = 0;
+let vScannerDirection = 1;
+let vScannerColour = r.WHITE;
 
-const scannerTwoRange = 20;
-const scannerTwoSpeed = 3;
+const hScannerOneRange = 20;
+const hScannerOneSpeed = 1;
 
-const scannerTwoHeight = screenHeight;
-const scannerTwoPositionY = 0;
-const scanTwoGBPosition = screenWidth - scannerTwoRange;
-const scanTwoStartPosition = (screenWidth / 2);
-let scannerTwoPosition = screenWidth / 2;
-let scannerTwoDirection = 1;
-let scannerTwoColour = r.WHITE;
+let hScannerOneXPosition = 0;
+let hScannerOneDirection = 1;
+let hScannerOneColour = r.WHITE;
 
-const particleOneStart = 80;
-const particleOneEnd = 100;
+const hScannerTwoRange = 20;
+const hScannerTwoSpeed = 3;
 
-const particleOneRange = particleOneEnd - particleOneStart;
-const particleOneHeight = screenHeight;
-const particleOnePositionX = particleOneStart;
-const particleOnePositionY = 0;
+let hScannerTwoXPosition = screenWidth / 2;
+let hScannerTwoDirection = 1;
+let hScannerTwoColour = r.WHITE;
 
-const particleTwoStart = 250;
-const particleTwoEnd = 255;
+const hParticleOneStart = 80;
+const hParticleOneRange = 20;
 
-const particleTwoRange = particleTwoEnd - particleTwoStart;
-const particleTwoHeight = screenHeight;
-const particleTwoPositionX = particleTwoStart;
-const particleTwoPositionY = 0;
+const hParticleTwoStart = 250;
+const hParticleTwoRange = 5;
 
-function overlapDetector(feild1Start, feil1End, feild2Start, feil2End, scan1Width, scan1Loc, scan2Width, scan2Loc) {
-    if ((scan1Loc >= (feild1Start - scan1Width) && (scan1Loc <= feil1End)) || (scan1Loc >= (feild2Start - scan1Width) && (scan1Loc <= feil2End))) {
-        scannerOneColour = r.RED;
+const vParticleOneStart = 80;
+const vParticleOneRange = 50;
+
+function twoOverlapDetector(Feild1Start, Feild1Range, Feild2Start, Feild2Range, ScanLoc, ScanRange) {
+    if ((ScanLoc >= (Feild1Start - ScanRange) && (ScanLoc <= (Feild1Start + Feild1Range))) || (ScanLoc >= (Feild2Start - ScanRange) && (ScanLoc <= (Feild2Start + Feild2Range)))) {
+        return r.RED;
     } else {
-        scannerOneColour = r.WHITE;
+        return r.WHITE;
     }
-    if ((scan2Loc >= (feild1Start - scan2Width) && (scan2Loc <= feil1End)) || (scan2Loc >= (feild2Start - scan2Width) && (scan2Loc <= feil2End))) {
-        scannerTwoColour = r.RED;
+}
+
+function oneOverlapDetector(FeildStart, FeildRange, ScanLoc, ScanRange) {
+    if (ScanLoc >= (FeildStart - ScanRange) && (ScanLoc <= (FeildStart + FeildRange))) {
+        return r.RED;
     } else {
-        scannerTwoColour = r.WHITE;
+        return r.WHITE;
     }
 }
 
 function particleFeilds() {
-    r.DrawRectangle(particleTwoPositionX, particleTwoPositionY, particleTwoRange, particleTwoHeight, r.BLUE);
-    r.DrawRectangle(particleOnePositionX, particleOnePositionY, particleOneRange, particleOneHeight, r.BLUE);
+    const hParticleOnePositionX = hParticleOneStart;
+    const hParticleOnePositionY = 0;
+    const hParticleOneHeight = screenHeight;
+
+    const hParticleTwoPositionX = hParticleTwoStart;
+    const hParticleTwoPositionY = 0;
+    const hParticleTwoHeight = screenHeight;
+
+    const vParticleOnePositionX = 0;
+    const vParticleOnePositionY = vParticleOneStart;
+    const vParticleOneWidth = screenWidth;
+
+    r.DrawRectangle(hParticleOnePositionX, hParticleOnePositionY, hParticleOneRange, hParticleOneHeight, r.BLUE);
+    r.DrawRectangle(hParticleTwoPositionX, hParticleTwoPositionY, hParticleTwoRange, hParticleTwoHeight, r.BLUE);
+    r.DrawRectangle(vParticleOnePositionX, vParticleOnePositionY, vParticleOneWidth, vParticleOneRange, r.BLUE);
 }
 
 function scannerFeilds() {
-    r.DrawRectangle(scannerOnePosition, scannerOnePositionY, scannerOneRange, scannerOneHeight, scannerOneColour);
-    r.DrawRectangle(scannerTwoPosition, scannerTwoPositionY, scannerTwoRange, scannerTwoHeight, scannerTwoColour);
+    const hScannerOneYPosition = 0;
+    const hScannerOneHeight = screenHeight;
+
+    const hScannerTwoYPosition = 0;
+    const hScannerTwoHeight = screenHeight;
+
+    const vScannerXPosition = 0;
+    const vScannerWidth = screenWidth;
+
+    r.DrawRectangle(hScannerOneXPosition, hScannerOneYPosition, hScannerOneRange, hScannerOneHeight, hScannerOneColour);
+    r.DrawRectangle(hScannerTwoXPosition, hScannerTwoYPosition, hScannerTwoRange, hScannerTwoHeight, hScannerTwoColour);
+    r.DrawRectangle(vScannerXPosition, vScannerYPosition, vScannerWidth, vScannerRange, vScannerColour);
 }
 
-function scannerOneDirectionSwither() {
-    if (scannerOnePosition >= scanOneGBPosition) {
-        return scannerOneDirection = 0;
+function hScannerOneDirectionSwither() {
+    const hScanOneGBPosition = (screenWidth / 2) - hScannerOneRange;
+    const hScanOneStartPosition = 0;
+
+    if (hScannerOneXPosition >= hScanOneGBPosition) {
+        return hScannerOneDirection = 0;
     }
-    if (scannerOnePosition <= scanOneStartPosition) {
-        return scannerOneDirection = 1;
+    if (hScannerOneXPosition <= hScanOneStartPosition) {
+        return hScannerOneDirection = 1;
     }
 }
 
-function scannerTwoDirectionSwither() {
-    if (scannerTwoPosition >= scanTwoGBPosition) {
-        return scannerTwoDirection = 0;
+function hScannerTwoDirectionSwither() {
+    const hScanTwoStartPosition = (screenWidth / 2);
+    const hScanTwoGBPosition = screenWidth - hScannerTwoRange;
+
+    if (hScannerTwoXPosition >= hScanTwoGBPosition) {
+        return hScannerTwoDirection = 0;
     }
-    if (scannerTwoPosition <= scanTwoStartPosition) {
-        return scannerTwoDirection = 1;
+    if (hScannerTwoXPosition <= hScanTwoStartPosition) {
+        return hScannerTwoDirection = 1;
+    }
+}
+
+function vScannerDirectionSwither() {
+    const vScanStartPosition = 0;
+    const vScanGBPosition = screenHeight - vScannerRange;
+
+    if (vScannerYPosition >= vScanGBPosition) {
+        return vScannerDirection = 0;
+    }
+    if (vScannerYPosition <= vScanStartPosition) {
+        return vScannerDirection = 1;
     }
 }
 
 function scannerMovements() {
-    scannerOnePosition = geometry.position(scannerOnePosition, scannerOneDirection, scannerOneSpeed);
-    scannerTwoPosition = geometry.position(scannerTwoPosition, scannerTwoDirection, scannerTwoSpeed);
-    scannerOneDirectionSwither();
-    scannerTwoDirectionSwither();
+    hScannerOneXPosition = geometry.position(hScannerOneXPosition, hScannerOneDirection, hScannerOneSpeed);
+    hScannerTwoXPosition = geometry.position(hScannerTwoXPosition, hScannerTwoDirection, hScannerTwoSpeed);
+    vScannerYPosition = geometry.position(vScannerYPosition, vScannerDirection, vScannerSpeed);
+    vScannerDirectionSwither();
+    hScannerOneDirectionSwither();
+    hScannerTwoDirectionSwither();
 }
 
 function running() {
@@ -102,7 +140,9 @@ function setup() {
 
 function update() {
     scannerMovements();
-    overlapDetector(particleOneStart, particleOneEnd, particleTwoStart, particleTwoEnd, scannerOneRange, scannerOnePosition, scannerTwoRange, scannerTwoPosition);
+    hScannerTwoColour = twoOverlapDetector(hParticleOneStart, hParticleOneRange, hParticleTwoStart, hParticleTwoRange, hScannerTwoXPosition, hScannerTwoRange);
+    hScannerOneColour = twoOverlapDetector(hParticleOneStart, hParticleOneRange, hParticleTwoStart, hParticleTwoRange, hScannerOneXPosition, hScannerOneRange);
+    vScannerColour = oneOverlapDetector(vParticleOneStart, vParticleOneRange, vScannerYPosition, vScannerRange);
 }
 
 function draw() {
