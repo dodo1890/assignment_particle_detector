@@ -1,106 +1,34 @@
 const r = require("raylib");
-const geometry = require("./geometry");
 
-const screenWidth = 300;
-const screenHeight = 200;
-const FPS = 60;
+const g = require("./geometry");
+const s = require("./screen");
+const s1 = require("./scanner1");
+const s2 = require("./scanner2");
+const s3 = require("./scanner3");
 
-const vScannerRange = 20;
-const vScannerSpeed = 2;
-
-let vScannerYPosition = 0;
-let vScannerDirection = 1;
-let vScannerColour = r.WHITE;
-
-const hScannerOneRange = 20;
-const hScannerOneSpeed = 1;
-
-let hScannerOneXPosition = 0;
-let hScannerOneDirection = 1;
-let hScannerOneColour = r.WHITE;
-
-const hScannerTwoRange = 20;
-const hScannerTwoSpeed = 3;
-
-let hScannerTwoXPosition = screenWidth / 2;
-let hScannerTwoDirection = 1;
-let hScannerTwoColour = r.WHITE;
-
-const hParticleOneStart = 140;
-const hParticleOneRange = 20;
-
-const hParticleTwoStart = 250;
-const hParticleTwoRange = 5;
-
-const vParticleOneStart = 80;
-const vParticleOneRange = 50;
-
-function twoOverlapDetector(Feild1Start, Feild1Range, Feild2Start, Feild2Range, ScanLoc, ScanRange) {
-    if ((ScanLoc >= (Feild1Start - ScanRange) && (ScanLoc <= (Feild1Start + Feild1Range))) || (ScanLoc >= (Feild2Start - ScanRange) && (ScanLoc <= (Feild2Start + Feild2Range)))) {
-        return r.RED;
-    } else {
-        return r.WHITE;
-    }
-}
-
-function oneOverlapDetector(FeildStart, FeildRange, ScanLoc, ScanRange) {
-    if (ScanLoc >= (FeildStart - ScanRange) && (ScanLoc <= (FeildStart + FeildRange))) {
-        return r.RED;
-    } else {
-        return r.WHITE;
-    }
-}
+const f1 = require("./feild1");
+const f2 = require("./feild2");
+const f3 = require("./feild3");
 
 function particleFeilds() {
-    const hParticleOnePositionX = hParticleOneStart;
-    const hParticleOnePositionY = 0;
-    const hParticleOneHeight = screenHeight;
-
-    const hParticleTwoPositionX = hParticleTwoStart;
-    const hParticleTwoPositionY = 0;
-    const hParticleTwoHeight = screenHeight;
-
-    const vParticleOnePositionX = 0;
-    const vParticleOnePositionY = vParticleOneStart;
-    const vParticleOneWidth = screenWidth;
-
-    r.DrawRectangle(hParticleOnePositionX, hParticleOnePositionY, hParticleOneRange, hParticleOneHeight, r.BLUE);
-    r.DrawRectangle(hParticleTwoPositionX, hParticleTwoPositionY, hParticleTwoRange, hParticleTwoHeight, r.BLUE);
-    r.DrawRectangle(vParticleOnePositionX, vParticleOnePositionY, vParticleOneWidth, vParticleOneRange, r.BLUE);
+    r.DrawRectangle(f1.start, 0, f1.range, s.height, r.BLUE);
+    r.DrawRectangle(f2.start, 0, f2.range, s.height, r.BLUE);
+    r.DrawRectangle(0, f3.start, s.width, f3.range, r.BLUE);
 }
 
 function scannerFeilds() {
-    const hScannerOneYPosition = 0;
-    const hScannerOneHeight = screenHeight;
-
-    const hScannerTwoYPosition = 0;
-    const hScannerTwoHeight = screenHeight;
-
-    const vScannerXPosition = 0;
-    const vScannerWidth = screenWidth;
-
-    r.DrawRectangle(hScannerOneXPosition, hScannerOneYPosition, hScannerOneRange, hScannerOneHeight, hScannerOneColour);
-    r.DrawRectangle(hScannerTwoXPosition, hScannerTwoYPosition, hScannerTwoRange, hScannerTwoHeight, hScannerTwoColour);
-    r.DrawRectangle(vScannerXPosition, vScannerYPosition, vScannerWidth, vScannerRange, vScannerColour);
+    r.DrawRectangle(s1.Xposition, 0, s1.range, s.height, s1.colour);
+    r.DrawRectangle(s2.Xposition, 0, s2.range, s.height, s2.colour);
+    r.DrawRectangle(0, s3.Yposition, s.width, s3.range, s3.colour);
 }
 
-function scannerMovements() {
-    const hScanOneGBPosition = (screenWidth / 2) - hScannerOneRange;
-    const hScanOneStartPosition = 0;
-
-    const hScanTwoStartPosition = (screenWidth / 2);
-    const hScanTwoGBPosition = screenWidth - hScannerTwoRange;
-
-    const vScanStartPosition = 0;
-    const vScanGBPosition = screenHeight - vScannerRange;
-
-    hScannerOneDirection = geometry.directionSwither(hScanOneStartPosition, hScanOneGBPosition, hScannerOneXPosition, hScannerOneDirection);
-    hScannerTwoDirection = geometry.directionSwither(hScanTwoStartPosition, hScanTwoGBPosition, hScannerTwoXPosition, hScannerTwoDirection);
-    vScannerDirection = geometry.directionSwither(vScanStartPosition, vScanGBPosition, vScannerYPosition, vScannerDirection);
-
-    hScannerOneXPosition = geometry.positionChanger(hScannerOneXPosition, hScannerOneDirection, hScannerOneSpeed);
-    hScannerTwoXPosition = geometry.positionChanger(hScannerTwoXPosition, hScannerTwoDirection, hScannerTwoSpeed);
-    vScannerYPosition = geometry.positionChanger(vScannerYPosition, vScannerDirection, vScannerSpeed);
+function moveScanner() {
+    s1.Xposition += s1.velocity;
+    s1.velocity = g.boundryCheck(0, s1.end, s1.range, s1.Xposition) ? -s1.velocity : s1.velocity;
+    s2.Xposition += s2.velocity;
+    s2.velocity = g.boundryCheck(s2.start, s.width, s2.range, s2.Xposition) ? -s2.velocity : s2.velocity;
+    s3.Yposition += s3.velocity;
+    s3.velocity = g.boundryCheck(0, s.height, s3.range, s3.Yposition) ? -s3.velocity : s3.velocity;
 }
 
 function running() {
@@ -108,15 +36,16 @@ function running() {
 }
 
 function setup() {
-    r.InitWindow(screenWidth, screenHeight, "PARTICLE DETECTOR");
-    r.SetTargetFPS(FPS);
+
+    r.InitWindow(s.width, s.height, "PARTICLE DETECTOR");
+    r.SetTargetFPS(s.FPS);
 }
 
 function update() {
-    scannerMovements();
-    hScannerTwoColour = twoOverlapDetector(hParticleOneStart, hParticleOneRange, hParticleTwoStart, hParticleTwoRange, hScannerTwoXPosition, hScannerTwoRange);
-    hScannerOneColour = twoOverlapDetector(hParticleOneStart, hParticleOneRange, hParticleTwoStart, hParticleTwoRange, hScannerOneXPosition, hScannerOneRange);
-    vScannerColour = oneOverlapDetector(vParticleOneStart, vParticleOneRange, vScannerYPosition, vScannerRange);
+    moveScanner();
+    s1.colour = g.isDetected(f1.start, f1.range, s1.Xposition, s1.range) || g.isDetected(f2.start, f2.range, s1.Xposition, s1.range) ? r.RED : r.WHITE;
+    s2.colour = g.isDetected(f1.start, f1.range, s2.Xposition, s2.range) || g.isDetected(f2.start, f2.range, s2.Xposition, s2.range) ? r.RED : r.WHITE;
+    s3.colour = g.isDetected(f3.start, f3.range, s3.Yposition, s3.range) ? r.RED : r.WHITE;
 }
 
 function draw() {

@@ -1,41 +1,16 @@
-
-
-function calcOffset(outer, inner) {
-    return (outer - inner) / 2;
+function isDetected(feildStart, feildRange, scanLoc, scanRange) {
+    let scanEnd = scanLoc + scanRange;
+    let fieldEnd = feildStart + feildRange;
+    return (scanEnd >= feildStart && (scanLoc <= fieldEnd)) ? true : false;
 }
 
-function positionChanger(p, toggle, speed) {
-    if (toggle === 1) {
-        return p + speed;
-    }
-    if (toggle === 0) {
-        return p - speed;
-    }
-}
-
-function directionSwither(minValue, maxValue, position, currentD) {
-    let switcher = currentD;
-
-    if (position >= maxValue && currentD === 1) {
-        switcher = 0;
-        return switcher;
-    } else if (position <= minValue && currentD === 0) {
-        switcher = 1;
-        return switcher;
-    } else {
-        return switcher;
-    }
-}
-
-
-
-function isNegative(value) {
-    return value > 0 ? value : 0;
+function boundryCheck(begin, end, range, position) {
+    const start = begin;
+    const goBack = end - range;
+    return position < start || position > goBack;
 }
 
 module.exports = {
-    calcOffset,
-    positionChanger,
-    isNegative,
-    directionSwither,
+    boundryCheck,
+    isDetected,
 };
