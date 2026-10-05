@@ -1,5 +1,5 @@
-const width = 300;
-const height = 200;
+const width = 600;
+const height = 400;
 const FPS = 60;
 
 module.exports = {

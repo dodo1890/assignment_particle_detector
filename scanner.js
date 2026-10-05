@@ -1,16 +1,33 @@
-// const s2 = require("./scanner2");
 const s = require("./screen");
 const r = require("raylib");
-const field = require("./fields");
+const f = require("./fields");
+const d = require("./detector");
 
-const s1 = createScanner(20, s.height, 0, s.width / 2, 1, 0, 0, 0);
-const s2 = createScanner(20, s.height, (s.width / 2), s.width, 3, (s.width / 2), 0, 0);
-const s3 = createScanner(s.width, 20, 0, s.height, 2, 0, 0, 0);
+function createScanner(width, height, start, goBack, velocity, x, y, colour, movement) {
+    return {
+        width: width,
+        height: height,
+        start: start,
+        goBack: goBack,
+        velocity: velocity,
+        x: x,
+        y: y,
+        colour: colour,
+        movement: movement,
+    }
+}
 
-function isDetected(feildStart, feildWidth, scanLoc, scanWidth) {
-    let scanEnd = scanLoc + scanWidth;
-    let fieldEnd = feildStart + feildWidth;
-    return (scanEnd > feildStart && (scanLoc < fieldEnd)) ? true : false;
+const s1 = createScanner(20, s.height, 0, s.width / 2, 1, 0, 0, 0, "horizontal");
+const s2 = createScanner(20, s.height, (s.width / 2), s.width, 2, (s.width / 2), 0, 0, "horizontal");
+const s3 = createScanner(s.width, 20, 0, s.height, 2, 0, 0, 0, "vertical");
+
+function recPositionAndSize(rect) {
+    return {
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height,
+    };
 }
 
 function boundryCheck(begin, end, width, position) {
@@ -19,64 +36,36 @@ function boundryCheck(begin, end, width, position) {
     return position < start || position > goBack;
 }
 
-function deriveVelocity(start, end, range, position, velocity) {
-    return boundryCheck(start, end, range, position) ? -velocity : velocity;
+function deriveVelocity(start, goBack, range, position, velocity) {
+    return boundryCheck(start, goBack, range, position) ? -velocity : velocity;
 }
 
-function chooseColour(scannerPosition, scannerWidth, feild1Start, feild1Width, feild2Start, feild2End) {
-    return isDetected(feild1Start, feild1Width, scannerPosition, scannerWidth) ||
-        isDetected(feild2Start, feild2End, scannerPosition, scannerWidth) ? r.RED : r.WHITE;
+function drawScanner(scanner) {
+    r.DrawRectangleRec(recPositionAndSize(scanner), scanner.colour);
 }
 
-function chooseHorizontalScannerColor(scannerPosition, scannerWidth, feildStart, feildEnd) {
-    return chooseColour(scannerPosition, scannerWidth, feildStart, feildEnd, -10, 0);
-}
-
-function drawScanners() {
-    r.DrawRectangle(s1.x, s1.y, s1.width, s1.height, s1.colour);
-    r.DrawRectangle(s2.x, s2.y, s2.width, s2.height, s2.colour);
-    r.DrawRectangle(s3.x, s3.y, s3.width, s3.height, s3.colour);
-}
-
-function moveScanner() {
-    s1.velocity = deriveVelocity(s1.start, s1.end, s1.width, s1.x, s1.velocity);
-    s1.x += s1.velocity;
-    s2.velocity = deriveVelocity(s2.start, s2.end, s2.width, s2.x, s2.velocity);
-    s2.x += s2.velocity;
-    s3.velocity = deriveVelocity(s3.start, s3.end, s3.height, s3.y, s3.velocity);
-    s3.y += s3.velocity;
-}
-
-function changeColor() {
-    s1.colour = chooseColour(s1.x, s1.width, field.f1.x, field.f1.width, field.f2.x, field.f2.width);
-    s2.colour = chooseColour(s2.x, s2.width, field.f1.x, field.f1.width, field.f2.x, field.f2.width);
-    s3.colour = chooseHorizontalScannerColor(s3.y, s3.height, field.f3.y, field.f3.height);
-}
-
-function createScanner(width, height, start, end, velocity, x, y, colour) {
-    return {
-        width: width,
-        height: height,
-        start: start,
-        end: end,
-        velocity: velocity,
-        x: x,
-        y: y,
-        colour: colour,
+function deriveScannerPosition(scanner) {
+    if (scanner.movement === "horizontal") {
+        scanner.velocity = deriveVelocity(scanner.start, scanner.goBack, scanner.width, scanner.x, scanner.velocity);
+        scanner.x += scanner.velocity;
+    }
+    if (scanner.movement === "vertical") {
+        scanner.velocity = deriveVelocity(scanner.start, scanner.goBack, scanner.height, scanner.y, scanner.velocity);
+        scanner.y += scanner.velocity;
     }
 }
 
-function createColor(r, g, b, a) {
-    return {
-        r: r,
-        g: g,
-        b: b,
-        a: a,
-    };
+function updateScanner(scanner, field1, field2) {
+    deriveScannerPosition(scanner);
+    scanner.colour = chooseColour(scanner, field1, field2);
+}
+
+function chooseColour(scanner, field1, field2) {
+    return d.isDetected(field1, scanner) || d.isDetected(field2, scanner) ? r.RED : r.WHITE;
 }
 
 module.exports = {
-    drawScanners,
-    moveScanner,
-    changeColor,
+    drawScanner,
+    updateScanner,
+    s1, s2, s3,
 }
